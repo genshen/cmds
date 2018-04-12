@@ -34,7 +34,8 @@ var Usage = func() {
 	// fmt.Printf("\t%s\t\t%s\n", "help", "show this help")
 
 	fmt.Println()
-	fmt.Printf(`Use "%s help [command]" for more information about a command.\n`, name)
+	fmt.Printf(`Use "%s help [command]" for more information about a command.`, name)
+	fmt.Println()
 }
 
 // it will be called when args have only a program name.
@@ -67,12 +68,10 @@ func Parse() {
 			}
 			if subCommand.Runner != nil {
 				if err := subCommand.Runner.PreRun(); err == nil {
-					var code = 0
-					if code, err = subCommand.Runner.Run(); err != nil {
+					if err = subCommand.Runner.Run(); err != nil {
 						fmt.Fprintln(os.Stderr, "Error:", err)
 						// todo rollback
 					}
-					os.Exit(code) // finish run.
 				} else {
 					fmt.Fprintln(os.Stderr, "Error:", err)
 				}

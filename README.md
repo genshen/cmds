@@ -43,8 +43,6 @@ default text
 ```bash
 $ ./example  print
 default text
-$ ./example  print -c hello
-hello
 ```
 ```bash
 $ ./example print -c hello

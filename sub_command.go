@@ -20,7 +20,7 @@ var AllCommands []*Command
 // PreRun(such as checking necessary environment) execute before Run.
 type CommandRunner interface {
 	PreRun() error
-	Run() (int,error)
+	Run() error
 }
 
 // struct for every sub-command.
