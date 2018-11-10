@@ -31,8 +31,8 @@ func (v *version) PreRun() error {
 	return nil
 }
 
-func (v *version) Run() (int, error) {
+func (v *version) Run() error {
 	fmt.Printf("version\t %s.\n", VERSION)
 	fmt.Println("Author\t abc@example.com")
-	return 0, nil
+	return nil
 }

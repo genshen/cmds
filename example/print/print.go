@@ -31,7 +31,7 @@ func (v *version) PreRun() error {
 	return nil // if error != nil, function Run will be not execute.
 }
 
-func (v *version) Run() (int, error) {
+func (v *version) Run() error {
 	fmt.Println(content)
-	return 0, nil
+	return nil
 }
