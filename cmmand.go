@@ -1,6 +1,7 @@
 package cmds
 
 import (
+	"errors"
 	"fmt"
 	"os"
 )
@@ -45,17 +46,17 @@ var SingleArg = func() {
 
 // parse args from os.Args.
 // and dispatch them to sub-command handle in AllCommands.
-func Parse() {
+func Parse() error {
 	if len(os.Args) <= 1 { // if args have only a program name.
 		SingleArg() // the default method is to print usage
-		return
+		return nil
 	}
 
 	args := os.Args[1:]
 	// 'help' command
 	if args[0] == "help" || args[0] == "--help" || args[0] == "h" || args[0] == "-h" {
 		Help(args[1:])
-		return
+		return nil
 	}
 
 	// find a available subCommand, and pass all left args (except command name) to this subCommand.
@@ -68,19 +69,17 @@ func Parse() {
 			}
 			if subCommand.Runner != nil {
 				if err := subCommand.Runner.PreRun(); err == nil {
-					if err = subCommand.Runner.Run(); err != nil {
-						fmt.Fprintln(os.Stderr, "Error:", err)
-						// todo rollback
-					}
+					return subCommand.Runner.Run()
+					// todo rollback if error
 				} else {
-					fmt.Fprintln(os.Stderr, "Error:", err)
+					return err
 				}
 			}
 			// todo error output.
-			return
+			return errors.New("the sub-command does not implement the Runner interface.")
 		}
 	}
-	UnknownSubCommand(args[0])
+	return UnknownSubCommand(args[0])
 }
 
 // print help messages, including 'programName --help' and 'programName --help sub-command'.
@@ -98,5 +97,5 @@ func Help(args []string) {
 			return
 		}
 	}
-	UnknownSubCommandHelp(args[0])
+	UnknownSubCommandHelp(args[0]) // print message of unkonwn sub-command.
 }

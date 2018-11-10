@@ -8,9 +8,9 @@ const DefaultUnknownSubCommandTemplate = `%s: unknown subcommand "%s"
 Run '%s help' for usage.
 `
 // example: running './ProgramName UnknownSubCommand [options]', then this function will be executed.
-var UnknownSubCommand = func(subCommand string) {
+var UnknownSubCommand = func(subCommand string) error{
 	name := GetProgramName()
-	fmt.Printf(DefaultUnknownSubCommandTemplate,name, subCommand, name)
+	return fmt.Errorf(DefaultUnknownSubCommandTemplate,name, subCommand, name)
 }
 
 const DefaultUnknownSubCommandHelpTemplate = `Unknown help topic "%s". Run '%s help'.`
