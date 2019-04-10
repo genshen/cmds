@@ -16,6 +16,17 @@ import (
 */
 var AllCommands []*Command
 
+// search all sub commands to find a command  by its unique name.
+// If found, return the pointer of this command, return nil pointer otherwise.
+func Find(name string) (bool, *Command) {
+	for _, subCommand := range AllCommands {
+		if subCommand.Name == name {
+			return true, subCommand
+		}
+	}
+	return false, nil
+}
+
 // interface for sub-commands.
 // PreRun(such as checking necessary environment) execute before Run.
 type CommandRunner interface {
