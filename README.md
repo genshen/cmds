@@ -29,7 +29,7 @@ $ ./example print -c # an argument after "-c" is required.
 flag needs an argument: -c
 print some text, e.g. Hello World.
 
-Useage of command "print":
+Usage of command "print":
 
         example print [options]
 

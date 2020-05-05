@@ -49,7 +49,7 @@ type Command struct {
 // print usage for sub-command.
 func (c *Command) Usage() {
 	fmt.Printf("%s\n\n", c.Description)
-	fmt.Printf("Useage of command \"%s\":\n\n", c.Name)
+	fmt.Printf("Usage of command \"%s\":\n\n", c.Name)
 	if c.HasOptions {
 		fmt.Printf("\t%s %s [options]\n\n", GetProgramName(), c.Name) // todo more complex.
 		fmt.Print("Options:\n\n")
