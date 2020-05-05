@@ -2,6 +2,7 @@ package cmds
 
 import (
 	"errors"
+	"flag"
 	"fmt"
 	"os"
 )
@@ -27,7 +28,7 @@ var Usage = func() {
 	name := GetProgramName()
 	fmt.Printf("Usage of %s:\n\n", name)
 	fmt.Printf("\t%s command [arguments]\n\n", name)
-	fmt.Println("The commands are:\n")
+	fmt.Print("The commands are:\n\n")
 	//PrintDefaultOptions()
 	for _, c := range AllCommands { // print sub-command option.
 		fmt.Printf("\t%s\t\t%s\n", c.Name, c.Summary)
@@ -56,16 +57,23 @@ func Parse() error {
 	// 'help' command
 	if args[0] == "help" || args[0] == "--help" || args[0] == "h" || args[0] == "-h" {
 		Help(args[1:])
-		return nil
+		return flag.ErrHelp
 	}
 
 	// find a available subCommand, and pass all left args (except command name) to this subCommand.
 	for _, subCommand := range AllCommands {
 		if subCommand.Name == args[0] {
 			if !subCommand.CustomFlags { // otherwise, handle parse by sub-command itself
-				//args = args[1:]
-				subCommand.FlagSet.Parse(args[1:])
-				// args = subCommand.FlagSet.Args()
+				err := subCommand.FlagSet.Parse(args[1:])
+				// the ErrorHandling here must be flag.ContinueOnError
+				// other types error handling has exit program
+				if err == flag.ErrHelp {
+					// does not return error if it is `--help`
+					return err
+				} else if err != nil {
+					// error message and usage have been printed in FlagSet.Parse.
+					return fmt.Errorf("%w", SubCommandParseError{E: err})
+				} // otherwise, continue run
 			}
 			if subCommand.Runner != nil {
 				if err := subCommand.Runner.PreRun(); err == nil {
@@ -76,7 +84,7 @@ func Parse() error {
 				}
 			}
 			// todo error output.
-			return errors.New("the sub-command does not implement the Runner interface.")
+			return errors.New("the sub-command does not implement the `Runner` interface")
 		}
 	}
 	return UnknownSubCommand(args[0])
